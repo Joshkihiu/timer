@@ -1,5 +1,6 @@
 import time
 import os
+import subprocess
 from datetime import datetime
 
 def countdown(minutes, seconds):
@@ -26,7 +27,16 @@ def alarm_clock(target_time):
         time.sleep(1)
 
 def play_alarm():
-    os.system('ffplay -nodisp -autoexit "Alarm.mp3"')
+    print("Playing alarm! Press Enter to stop.")
+    # Start alarm sound in background
+    process = subprocess.Popen(['ffplay', '-nodisp', '-autoexit', 'Akatsuki.mp3'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    
+    try:
+        input()  # Wait for user to press Enter
+    except KeyboardInterrupt:
+        pass
+    process.terminate()
+    print("Alarm stopped.")
 
 def main():
     print("Select mode:")
@@ -50,7 +60,7 @@ def main():
             now = datetime.now()
             target_time = now.replace(hour=target_time.hour, minute=target_time.minute, second=target_time.second)
             if target_time < now:
-                target_time = target_time.replace(day=now.day + 1)  # Schedule for next day if time already passed
+                target_time = target_time.replace(day=now.day + 1)  # Next day
             alarm_clock(target_time)
         except ValueError:
             print("Invalid time format. Use HH:MM:SS.")
